@@ -12,8 +12,6 @@ type coordinate struct {
 
 func main() {
 	instructions := os.Args[1:]
-	fmt.Println("args: ", instructions)
-
 	position := coordinate{0, 0}
 
 	for ii, instruction := range instructions {
