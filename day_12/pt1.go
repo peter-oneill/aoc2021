@@ -15,30 +15,20 @@ type node struct {
 }
 
 func main() {
-	// input_lines := strings.Split(os.Args[1], "\n")
 	input_lines := os.Args[1]
 	var nodes []*node
 
-	// for _, input_line := range input_lines {
 	matches := regexp.MustCompile("([a-zA-Z]+)-([a-zA-Z]+)").FindAllStringSubmatch(input_lines, -1)
 	for _, match := range matches {
-		// print_nodes(nodes)
 		node1_name := match[1]
 		node2_name := match[2]
 		var node1_p *node
 		var node2_p *node
 
-		// fmt.Println("nodes", node1_name, " and", node2_name)
-
-		// add each other's nodes to neighbours list
 		for ii, n := range nodes {
 			if n.name == node1_name {
-				// fmt.Println("Found node 1", node1_name)
 				node1_p = nodes[ii]
-				// fmt.Println(node1_p)
-				// fmt.Println(&node1_p)
 			} else if n.name == node2_name {
-				// fmt.Println("Found node 2", node2_name)
 				node2_p = nodes[ii]
 			}
 		}
@@ -50,7 +40,6 @@ func main() {
 			}
 			node1 := node{node1_name, nil, visits_allowed}
 			nodes = append(nodes, &node1)
-			// node1_p = &node1
 			node1_p = nodes[len(nodes)-1]
 		}
 		if node2_p == nil {
@@ -63,56 +52,27 @@ func main() {
 			node2_p = nodes[len(nodes)-1]
 		}
 
-		// fmt.Println(node1_p, node2_p)
-		// fmt.Println(node1_p)
-		// fmt.Println(&node1_p)
-		// fmt.Println(node2_p)
-		// fmt.Println(&node2_p)
-
 		node1_p.neighbours = append(node1_p.neighbours, node2_p)
 		node2_p.neighbours = append(node2_p.neighbours, node1_p)
-		// fmt.Println(node1_p)
-		// fmt.Println(&node1_p)
-		// fmt.Println(node2_p)
-		// fmt.Println(&node2_p)
-		// print_nodes(nodes)
-		// fmt.Println(node1_p, node2_p)
 	}
 
-	// print_nodes(nodes)
-
 	var path []*node
-	// var start_node *node
 	var start_node_ix int
 
 	for node_ix, n := range nodes {
 		if n.name == "start" {
-			// start_node = &nodes[node_ix]
 			start_node_ix = node_ix
 			break
 		}
 	}
 
-	// fmt.Println(start_node)
-	// fmt.Printf("afer passing %p\n", start_node)
-
-	// print_nodes(nodes)
-	// print_n
 	paths_found := visit_node(nodes, start_node_ix, path, 0)
 	fmt.Println("Paths found: ", paths_found)
-	// for ii := range start_node.neighbours {
-	//     if start_node.neighbours[ii].visits_allowed != 0 {
-	// 		path = visit_node(start_node.neighbours[ii], path)
-	// 	}
-
-	// }
 
 	return
 }
 
 func visit_node(nodes []*node, index int, path []*node, paths_found int) int {
-	// fmt.Printf("visiting %s at %p\n", (nodes)[index].name, (nodes)[index])
-	// print_node(nodes, index)
 	var new_paths_found int = paths_found
 	switch nodes[index].visits_allowed {
 	case 0:
@@ -132,7 +92,6 @@ func visit_node(nodes []*node, index int, path []*node, paths_found int) int {
 					next_ix = ix
 				}
 			}
-			// fmt.Println("next to visit: ", nodes[next_ix].name, nodes[next_ix])
 			new_paths_found = visit_node(nodes, next_ix, path, new_paths_found)
 		}
 	}
