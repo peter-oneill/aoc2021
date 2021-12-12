@@ -22,7 +22,7 @@ func main() {
 	// for _, input_line := range input_lines {
 	matches := regexp.MustCompile("([a-zA-Z]+)-([a-zA-Z]+)").FindAllStringSubmatch(input_lines, -1)
 	for _, match := range matches {
-		print_nodes(nodes)
+		// print_nodes(nodes)
 		node1_name := match[1]
 		node2_name := match[2]
 		var node1_p *node
@@ -75,7 +75,7 @@ func main() {
 		// fmt.Println(&node1_p)
 		// fmt.Println(node2_p)
 		// fmt.Println(&node2_p)
-		print_nodes(nodes)
+		// print_nodes(nodes)
 		// fmt.Println(node1_p, node2_p)
 	}
 
@@ -96,10 +96,10 @@ func main() {
 	// fmt.Println(start_node)
 	// fmt.Printf("afer passing %p\n", start_node)
 
-	print_nodes(nodes)
+	// print_nodes(nodes)
 	// print_n
-	visit_node(nodes, start_node_ix, path)
-
+	paths_found := visit_node(nodes, start_node_ix, path, 0)
+	fmt.Println("Paths found: ", paths_found)
 	// for ii := range start_node.neighbours {
 	//     if start_node.neighbours[ii].visits_allowed != 0 {
 	// 		path = visit_node(start_node.neighbours[ii], path)
@@ -110,18 +110,20 @@ func main() {
 	return
 }
 
-func visit_node(nodes []*node, index int, path []*node) {
-	fmt.Printf("visiting %s at %p\n", (nodes)[index].name, (nodes)[index])
-	print_node(nodes, index)
+func visit_node(nodes []*node, index int, path []*node, paths_found int) int {
+	// fmt.Printf("visiting %s at %p\n", (nodes)[index].name, (nodes)[index])
+	// print_node(nodes, index)
+	var new_paths_found int = paths_found
 	switch nodes[index].visits_allowed {
 	case 0:
-		return
+		return paths_found
 	case 1:
 		nodes[index].visits_allowed = 0
 	}
 	path = append(path, nodes[index])
 	if nodes[index].name == "end" {
 		print_path(path)
+		new_paths_found++
 	} else {
 		for ii := range nodes[index].neighbours {
 			var next_ix int
@@ -130,8 +132,8 @@ func visit_node(nodes []*node, index int, path []*node) {
 					next_ix = ix
 				}
 			}
-			fmt.Println("next to visit: ", nodes[next_ix].name, nodes[next_ix])
-			visit_node(nodes, next_ix, path)
+			// fmt.Println("next to visit: ", nodes[next_ix].name, nodes[next_ix])
+			new_paths_found = visit_node(nodes, next_ix, path, new_paths_found)
 		}
 	}
 
@@ -139,7 +141,7 @@ func visit_node(nodes []*node, index int, path []*node) {
 		nodes[index].visits_allowed = 1
 	}
 
-	return
+	return new_paths_found
 }
 
 func print_path(path []*node) {
