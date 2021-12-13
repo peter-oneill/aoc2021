@@ -70,7 +70,7 @@ func visit_node(n *node, path []*node, paths_found int, had_double_visit bool) i
 	}
 
 	if n.name == "end" {
-		print_path(append(path, n))
+		// print_path(append(path, n))
 		return paths_found + 1
 	}
 

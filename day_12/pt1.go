@@ -82,7 +82,7 @@ func visit_node(nodes []*node, index int, path []*node, paths_found int) int {
 	}
 	path = append(path, nodes[index])
 	if nodes[index].name == "end" {
-		print_path(path)
+		// print_path(path)
 		new_paths_found++
 	} else {
 		for ii := range nodes[index].neighbours {
