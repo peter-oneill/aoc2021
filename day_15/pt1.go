@@ -1,0 +1,75 @@
+// Run as `go run pt2.go "$(cat input.txt )"``
+package main
+
+import (
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type position struct {
+	x, y          int
+	risk          int
+	cheapest_path int
+}
+
+func main() {
+	input := os.Args[1]
+
+	var grid [][]position
+
+	for y, line := range strings.Split(input, "\n") {
+		grid = append(grid, make([]position, 0))
+		for x, strval := range line {
+			num_val, _ := strconv.Atoi(string(strval))
+			new_pos := position{x, y, num_val, -1}
+			grid[y] = append(grid[y], new_pos)
+		}
+	}
+
+	start_x, start_y := 0, 0
+	end_x := len(grid[0]) - 1
+	end_y := len(grid) - 1
+
+	starting_node := &grid[start_y][start_x]
+	starting_node.cheapest_path = 0
+
+	var positions_to_hunt_from = []*position{&grid[start_y][start_x]}
+
+	for {
+		if len(positions_to_hunt_from) == 0 {
+			break
+		}
+		var next_positions []*position
+		for _, pos_ptr := range positions_to_hunt_from {
+			x := pos_ptr.x
+			y := pos_ptr.y
+			if x > 0 {
+				append_if_better_path(&next_positions, pos_ptr, &grid[pos_ptr.y][pos_ptr.x-1])
+			}
+			if x < end_x {
+				append_if_better_path(&next_positions, pos_ptr, &grid[pos_ptr.y][pos_ptr.x+1])
+			}
+			if y > 0 {
+				append_if_better_path(&next_positions, pos_ptr, &grid[pos_ptr.y-1][pos_ptr.x])
+			}
+			if y < end_y {
+				append_if_better_path(&next_positions, pos_ptr, &grid[pos_ptr.y+1][pos_ptr.x])
+			}
+		}
+		positions_to_hunt_from = next_positions
+	}
+
+	fmt.Println("cost to bottom right: ", grid[end_y][end_x].cheapest_path)
+
+	return
+}
+
+func append_if_better_path(list *[]*position, pos_ptr *position, neighbour *position) {
+	this_route_risk := pos_ptr.cheapest_path + neighbour.risk
+	if this_route_risk < neighbour.cheapest_path || neighbour.cheapest_path == -1 {
+		neighbour.cheapest_path = this_route_risk
+		(*list) = append(*list, neighbour)
+	}
+}
